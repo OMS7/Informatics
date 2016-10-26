@@ -13,7 +13,8 @@ double binpow(double a, int b) {
 	return r;
 }
 int main() {
-	int a, b;
+	double a;
+	int b;
 	cin >> a >> b;
 	cout << binpow(a, b) << endl;
 	return 0;
