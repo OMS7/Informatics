@@ -30,7 +30,7 @@ vvi BuildSnake(int n, int m) {
 			else cx++;
 		}
 		else {
-			if (cy == 0 || snake[cy - 1][cx] == 1) {
+			if (cy == 0 || snake[cy - 1][cx] != -1) {
 				dir = 0;
 				cx--;
 			}
