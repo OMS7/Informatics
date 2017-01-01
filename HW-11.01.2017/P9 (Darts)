@@ -15,7 +15,14 @@ void darts_game(int n, int pos) {
 		if (ans.back()[0] == 'D' || ans.back() == "Bull") output();
 		return;
 	}
-	if (pos == 4) return;
+	if (pos == 3) {
+		if (n % 2 == 0) {
+			ans.push_back("D" + to_string(n / 2));
+			output();
+			ans.pop_back();
+		}
+		return;
+	}
 	for (int i = 1; i <= 20; i++) {
 		ans.push_back(to_string(i));
 		darts_game(n - i, pos + 1);
