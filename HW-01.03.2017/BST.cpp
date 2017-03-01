@@ -6,7 +6,7 @@ template <class T> class bstree {
 		T val;
 		elem *left = nullptr, *right = nullptr, *parent = nullptr;
 	};
-	elem* minimum(elem *e) {
+	elem* minimum1(elem *e) {
 		elem *cur = e;
 		while (cur->left != nullptr) {
 			cur = cur->left;
@@ -30,6 +30,12 @@ template <class T> class bstree {
 		PrintPostOrder1(cur->left);
 		PrintPostOrder1(cur->right);
 		cout << cur->val << " ";
+	}
+	void isbalance(elem *cur, int h, int &maxh) {
+		if (cur == nullptr) return;
+		maxh = max(maxh, h);
+		isbalance(cur->left, h + 1, maxh);
+		isbalance(cur->right, h + 1, maxh);
 	}
 	elem *root = nullptr;
 	int sz = 0;
@@ -76,11 +82,11 @@ public:
 		}
 		return 0;
 	}
-	T min() {
+	T minimum() {
 		if (root == nullptr) exit(EXIT_FAILURE);
-		return minimum(root)->val;
+		return minimum1(root)->val;
 	}
-	T max() {
+	T maximum() {
 		if (root == nullptr) exit(EXIT_FAILURE);
 		elem *cur = root;
 		while (cur->right != nullptr) {
@@ -119,7 +125,7 @@ public:
 			delete cur;
 		}
 		else {
-			elem *e = minimum(cur->right);
+			elem *e = minimum1(cur->right);
 			cur->val = e->val;
 			if (e->parent->left == cur) {
 				e->parent->left = nullptr;
@@ -142,6 +148,13 @@ public:
 		root = nullptr;
 		sz = 0;
 	}
+	bool balance() {
+		elem *cur = root;
+		int maxh = 0;
+		isbalance(cur, 1, maxh);
+		if (log2(sz) >= maxh) return 1;
+		else return 0;
+	}
 };
 int main() {
 	bstree<int> bst;
@@ -151,11 +164,12 @@ int main() {
 	bst.insert(2);
 	bst.insert(6);
 	bst.insert(4);
+	cout << bst.balance() << endl; 
 	bst.PrintInOrder(); cout << endl;
 	bst.PrintPreOrder(); cout << endl;
 	bst.PrintPostOrder(); cout << endl;
-	cout << bst.min() << endl;
-	cout << bst.max() << endl;
+	cout << bst.minimum() << endl;
+	cout << bst.maximum() << endl;
 	cout << bst.erase(1) << " "
 		 << bst.erase(2) << " "
 		 << bst.erase(5) << endl;
