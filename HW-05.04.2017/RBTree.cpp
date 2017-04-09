@@ -5,6 +5,7 @@ class rbtree {
 	struct node {
 		T key;
 		bool color;
+		bool fict = 0;
 		node *left, *right, *parent;
 		node(T val, node* par) {
 			key = val;
@@ -71,16 +72,25 @@ class rbtree {
 			if (parent == nullptr) tree->color = 0;
 			return tree;
 		}
-		if (key < tree->key) tree->left = _insert(tree->left, key, tree);
+		if (key <= tree->key) tree->left = _insert(tree->left, key, tree);
 		else tree->right = _insert(tree->right, key, tree);
 		return balancing_insert(tree);
 	}
 	bool _find(node* tree, T key) {
 		if (tree == nullptr) return 0;
-		if (tree->key == key) return 1;
-		return (key < tree->key) ? _find(tree->left, key) : _find(tree->right, key);
+		if (tree->key == key && !tree->fict) return 1;
+		return (key <= tree->key) ? _find(tree->left, key) : _find(tree->right, key);
 	}
-	node* balancing_erase(node* tree, node* newnode) {
+	void _erase(node* tree, T key) {
+		if (tree == nullptr) return;
+		if (tree->key == key && !tree->fict) {
+			tree->fict = 1;
+			return;
+		}
+		if (tree->key <= key) _erase(tree->right, key);
+		else _erase(tree->left, key);
+	}
+	/*node* balancing_erase(node* tree, node* newnode) {
 		if (tree->left == newnode) {
 			if (tree->right->color) {
 				tree = rotate_left(tree);
@@ -180,11 +190,11 @@ class rbtree {
 	node* getmin(node* tree) {
 		if (tree->left != nullptr) return getmin(tree->left);
 		return tree;
-	}	
+	}	*/
 	void _print(node* tree) {
 		if (tree == nullptr) return;
 		_print(tree->left);
-		cout << tree->key << " ";
+		if (!tree->fict) cout << tree->key << " ";
 		_print(tree->right);
 	}
 	void _clear(node* tree) {
@@ -199,16 +209,16 @@ class rbtree {
 	void _upper_bound(node* tree, T key, T &ans) {
 		if (tree == nullptr) return;
 		if (key < tree->key) {
-			ans = min(ans, tree->key);
+			if (!tree->fict) ans = min(ans, tree->key);
 			_upper_bound(tree->left, key, ans);
 		}
 		else _upper_bound(tree->right, key, ans);
 	}
 	void _get_all(node* tree, vector<T> &v) {
 		if (tree == nullptr) return;
-		_get_all(tree->left);
-		v.push_back(tree->key);
-		_get_all(tree->right);
+		_get_all(tree->left, v);
+		if (!tree->fict) v.push_back(tree->key);
+		_get_all(tree->right, v);
 	}
 public:
 	rbtree() {
@@ -238,14 +248,16 @@ public:
 		sz--;
 		return 1;
 	}
-	void merge(const rbtree &rb) {
+	void merge(rbtree &rb) {
 		vector<T> v = rb.get_all();
 		for (int i = 0; i < v.size(); i++) insert(v[i]);
 	}
-	void intersect(const rbtree &rb) {
+	void intersect(rbtree &rb) {
 		vector<T> v = get_all();
 		for (int i = 0; i < v.size(); i++) {
-			if (!rb.find(v[i])) erase(v[i]);
+			if (!rb.find(v[i])) {
+				erase(v[i]);
+			}
 		}
 	}
 	vector<T> get_all() {
@@ -274,29 +286,25 @@ public:
 	}
 };
 int main() {
-	rbtree<int> rb;
-	for (int i = 0; i < 10; i++) rb.insert(i + 1);
+	rbtree<string> rb;
+	string s = "a";
+	for (int i = 0; i < 10; i++) {
+		s.push_back('a' + i);
+		rb.insert(s);
+		s.pop_back();
+	}
 	rb.print(); cout << endl;
-	rb.erase(1); rb.erase(5);
+	rb.erase("aa"); rb.erase("ae");
 	rb.print(); cout << endl;
 	cout << rb.size() << " " << rb.empty() << endl;
-	rb.erase(3);
+	cout << rb.find("ab") << " " << rb.find("aa") << endl;
+	rb.insert("ab");
 	rb.print(); cout << endl;
-	cout << "upper_bound 5 : " << rb.upper_bound(5) << endl;
-	cout << "upper_bound 0 : " << rb.upper_bound(0) << endl;
-	cout << "upper_bound 2 : " << rb.upper_bound(2) << endl;
-	cout << "lower_bound 2 : " << rb.lower_bound(2) << endl;
-	cout << "lower_bound 3 : " << rb.lower_bound(3) << endl;
-	rb.clear();
-	const int N = 30;
-	int a[N];
-	for (int i = 0; i < N; i++) a[i] = rand() % 10;
-	random_shuffle(a, a + N);
-	cout << "sort:" << endl;
-	for (int i = 0; i < N; i++) {
-		cout << a[i] << " ";
-		rb.insert(a[i]);
-	}
-	cout << endl;
-	rb.print();
+	rbtree<string> rb2;
+	rb2.insert("aa");
+	rb2.insert("ab");
+	rb.merge(rb2);
+	rb.print(); cout << endl;
+	rb.intersect(rb2);
+	rb.print(); cout << endl;
 }
