@@ -21,7 +21,7 @@ int main() {
 	for (int i = 0; i < s.size(); i++) {
 		int q = s[i];
 		q = bpow(q, e, n);
-		q %= 256;
+		q %= 128;
 		ans.push_back(q);
 	}
 	cout << ans;
