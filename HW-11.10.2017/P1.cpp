@@ -11,7 +11,7 @@ void dfs(int s, vector<vector<int>> &g, vector<int> &c, int cur) {
 int main() {
 	int n, m;
 	cin >> n >> m;
-	vector<vector<int>> g(n, vector<int> (m));
+	vector<vector<int>> g(n, vector<int>(n));
 	for (int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
