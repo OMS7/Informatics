@@ -16,6 +16,14 @@ bool bf(int s, vector<vector<int>> &g, vector<bool> &vis, vector<int> &ans) {
 		if (vis[to]) continue;
 		if (bf(to, g, vis, ans)) return true;
 	}
+	/*
+	if (ans.size() == g.size()) {
+		for (int i = 0; i < g.size(); i++) {
+			cout << ans[i] << " ";
+		}
+		cout << "\n";
+	}
+	*/
 	vis[s] = false;
 	ans.pop_back();
 	return false;
