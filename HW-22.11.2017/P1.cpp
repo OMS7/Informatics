@@ -31,7 +31,9 @@ public:
 		int n = g.size();
 		vector<int> tin(n), up(n), ans;
 		int t = 1;
-		dfs(0, -1, t, g, tin, up, ans);
+		for (int i = 0; i < n; i++) {
+			if (tin[i] == 0) dfs(i, -1, t, g, tin, up, ans);
+		}
 		return ans;
 	} 
 	vector<int> operator ()(vector<vector<int>> &g) {
@@ -50,7 +52,7 @@ int main() {
 		g[a].push_back(b);
 		g[b].push_back(a);
 	}
-	СutVertex cv;
+	CutVertex cv;
 	vector<int> ans = cv(g);
 	cout << ans.size() << endl;
 	for (int i = 0; i < ans.size(); i++) {
