@@ -3,7 +3,7 @@ using namespace std;
 
 class Matching {
 	bool dfs(int s, vector<vector<int>> &g, vector<bool> &was, vector<int> &match) {
-		match[s] = true;
+		was[s] = true;
 		for (int to : g[s]) {
 			if (match[to] == -1 || (!was[match[to]] && dfs(match[to], g, was, match))) {
 				match[to] = s;
